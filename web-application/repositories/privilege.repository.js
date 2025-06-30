@@ -2,7 +2,7 @@ import pool from "../utils/database.js";
 
 export async function getPrivilegeForRole(role) {
     const grantee = `'${role}'@'%'`;
-    const [rows] = await pool.execute(`
+    const [rows] = await pool.query(`
         SELECT CONCAT(privilege_type, ' ON *.*')
         FROM information_schema.user_privileges up
         WHERE up.grantee = ?
@@ -15,6 +15,6 @@ export async function getPrivilegeForRole(role) {
 }
 
 export async function grantPrivilegeToRole(role, tableName, privilegeString) {
-    await pool.execute(`GRANT ${privilegeString} ON ${tableName} TO ?`, [role]);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`GRANT ${privilegeString} ON ${tableName} TO ?`, [role]);
+    await pool.query(`FLUSH PRIVILEGES`);
 }

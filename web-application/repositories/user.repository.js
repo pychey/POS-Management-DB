@@ -1,7 +1,7 @@
 import pool from "../utils/database.js";
 
 export async function getUser() {
-    const [rows] = await pool.execute(`
+    const [rows] = await pool.query(`
         SELECT u.User as username, u.Host as host, 
                 COALESCE(re.from_user, 'No Role') as role,
                 IF(u.account_locked = 'Y', 'Locked', 'Active') as status
@@ -15,28 +15,28 @@ export async function getUser() {
 }
 
 export async function createUser(username, password, host, role) {
-    await pool.execute(`CREATE USER '${username}'@'${host}' IDENTIFIED BY '${password}'`);
-    await pool.execute(`GRANT '${role}' TO '${username}'@'${host}'`);
-    await pool.execute(`SET DEFAULT ROLE '${role}' TO '${username}'@'${host}'`);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`CREATE USER '${username}'@'${host}' IDENTIFIED BY '${password}'`);
+    await pool.query(`GRANT '${role}' TO '${username}'@'${host}'`);
+    await pool.query(`SET DEFAULT ROLE '${role}' TO '${username}'@'${host}'`);
+    await pool.query(`FLUSH PRIVILEGES`);
 }
 
 export async function updateUser(username, host, newRole) {
-    const [currentRoles] = await pool.execute(`
+    const [currentRoles] = await pool.query(`
         SELECT from_user as role FROM mysql.role_edges 
         WHERE to_user = ? AND to_host = ?
     `, [username, host]);
     
     for (const roleRow of currentRoles) {
-        await pool.execute(`REVOKE ? FROM '${username}'@'${host}'`, [roleRow.role]);
+        await pool.query(`REVOKE ? FROM '${username}'@'${host}'`, [roleRow.role]);
     }
     
-    await pool.execute(`GRANT ? TO '${username}'@'${host}'`, [newRole]);
-    await pool.execute(`SET DEFAULT ROLE ? TO '${username}'@'${host}'`, [newRole]);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`GRANT ? TO '${username}'@'${host}'`, [newRole]);
+    await pool.query(`SET DEFAULT ROLE ? TO '${username}'@'${host}'`, [newRole]);
+    await pool.query(`FLUSH PRIVILEGES`);
 }
 
 export async function deleteUser(username, host) {
-    await pool.execute(`DROP USER '${username}'@'${host}'`);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`DROP USER '${username}'@'${host}'`);
+    await pool.query(`FLUSH PRIVILEGES`);
 }

@@ -1,7 +1,7 @@
 import pool from "../utils/database.js";
 
 export async function getRole() {
-    const [rows] = await pool.execute(`
+    const [rows] = await pool.query(`
         SELECT User as name, 
        	    (SELECT COUNT(*) FROM mysql.role_edges WHERE from_user = User) as userCount
         FROM mysql.user
@@ -12,11 +12,11 @@ export async function getRole() {
 }
 
 export async function createRole(roleName) {
-    await pool.execute(`CREATE ROLE ?`, [roleName]);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`CREATE ROLE ?`, [roleName]);
+    await pool.query(`FLUSH PRIVILEGES`);
 }
 
 export async function deleteRole(roleName) {
-    await pool.execute(`DROP ROLE ?`, [roleName]);
-    await pool.execute(`FLUSH PRIVILEGES`);
+    await pool.query(`DROP ROLE ?`, [roleName]);
+    await pool.query(`FLUSH PRIVILEGES`);
 }
