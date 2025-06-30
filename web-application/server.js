@@ -3,6 +3,7 @@ import cors from "cors";
 import userRouter from './routes/user.route.js';
 import roleRouter from './routes/role.route.js';
 import privilegeRouter from './routes/privilege.route.js'
+import tableRouter from "./routes/table.route.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.static('public'));
 app.use('/api/users/', userRouter);
 app.use('/api/roles/', roleRouter);
 app.use('/api/privileges/', privilegeRouter);
+app.use('/api/tables/', tableRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

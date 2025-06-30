@@ -1,4 +1,3 @@
-// Data storage
 let users = [];
 let roles = [];
 
@@ -126,7 +125,6 @@ async function loadRoles() {
                 <td>${role.userCount}</td>
                 <td>
                     <button onclick="deleteRole('${role.name}')">Delete</button>
-                    <button onclick="editRole('${role.name}')">Edit</button>
                 </td>
             `;
         });
@@ -189,15 +187,19 @@ async function deleteRole(roleName) {
     }
 }
 
-function editRole(roleName) {
-    const role = roles.find(r => r.name === roleName);
-    if (role) {
-        const newDesc = prompt(`Enter new description for ${roleName}:`, role.description);
-        if (newDesc !== null) {
-            role.description = newDesc;
-            alert(`Role ${roleName} description updated!`);
-            loadRoles();
-        }
+async function loadTables() {
+    try {
+        const response = await fetch('/api/tables');
+        const tables = await response.json();
+        
+        const tableSelect = document.getElementById('privilegeTable');
+        tableSelect.innerHTML = '<option value="">Select Table</option>';
+        
+        tables.forEach(table => {
+            tableSelect.innerHTML += `<option value="${table.name}">${table.name}</option>`;
+        });
+    } catch (error) {
+        console.error('Error loading tables:', error);
     }
 }
 
@@ -299,4 +301,5 @@ async function viewRolePrivileges() {
 window.onload = function() {
     loadUsers();
     loadRoles();
+    loadTables();
 };
