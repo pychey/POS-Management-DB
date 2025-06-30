@@ -4,7 +4,7 @@ export const getPrivilegeForRole = async (req, res) => {
     const role = req.params.role;
 
     try {
-        const [rows] = await privilegeRepository.getPrivilegeForRole(role);
+        const rows = await privilegeRepository.getPrivilegeForRole(role);
         res.json(rows.map(row => row.privilege));
     } catch (error) {
         res.status(500).json({ error: error.message });

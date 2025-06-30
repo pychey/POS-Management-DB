@@ -1,5 +1,6 @@
-CREATE DATABASE IF NOT EXISTS pos_provider_system;
-USE pos_provider_system;
+DROP DATABASE IF EXISTS pos_management_db;
+DATABASE IF NOT EXISTS pos_management_db;
+USE pos_management_db;
 
 -- 1. POS System (Products you sell)
 CREATE TABLE pos_system (
@@ -12,10 +13,8 @@ CREATE TABLE pos_system (
 -- 2. POS Features (for marketing, feature management)
 CREATE TABLE pos_feature (
     feature_id INT AUTO_INCREMENT PRIMARY KEY,
-    pos_id INT,
     feature_name VARCHAR(150) NOT NULL,
-    description TEXT,
-    FOREIGN KEY (pos_id) REFERENCES pos_system(pos_id)
+    description TEXT
 );
 
 -- 3. Pricing Plans
@@ -69,25 +68,24 @@ CREATE TABLE store_inventory (
 CREATE TABLE store_transaction (
     transaction_id INT AUTO_INCREMENT PRIMARY KEY,
     store_id INT,
-    total_amount DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (store_id) REFERENCES store_client(store_id)
 );
 
 -- 8. Transaction Items (Products in each transaction)
 CREATE TABLE transaction_item (
-    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    inventory_id INT,
     transaction_id INT,
-    product_name VARCHAR(150),
     quantity INT NOT NULL,
     unit_price DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (transaction_id) REFERENCES store_transaction(transaction_id)
+    FOREIGN KEY (transaction_id) REFERENCES store_transaction(transaction_id),
+    foreign key (inventory_id) references store_inventory(inventory_id)
 );
 
--- 9. Blog (Optional: for marketing, announcements, news)
-CREATE TABLE blog (
-    blog_id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- 9. System_feature
+create table system_feature(
+	pos_id int,
+	feature_id int,
+	foreign key(pos_id) references pos_system(pos_id),
+	foreign key(feature_id) references pos_feature(feature_id)
 );

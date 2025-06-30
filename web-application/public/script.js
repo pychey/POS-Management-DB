@@ -64,7 +64,8 @@ async function createUser(event) {
 async function deleteUser(username, host) {
     if (confirm(`Are you sure you want to delete user ${username}@${host}?`)) {
         try {
-            const response = await fetch(`/api/users/${username}/${host}`, {
+            const encodedHost = encodeURIComponent(host);
+            const response = await fetch(`/api/users/${username}/${encodedHost}`, {
                 method: 'DELETE'
             });
             
@@ -210,6 +211,17 @@ function updateRoleDropdowns() {
     roles.forEach(role => {
         privilegeRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
         viewPrivilegesRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
+    });
+
+    populateNewUserRoleDropdown();
+}
+
+function populateNewUserRoleDropdown() {
+    const newUserRoleSelect = document.getElementById('newUserRole');
+    newUserRoleSelect.innerHTML = '<option value="">Select Role</option>';
+    
+    roles.forEach(role => {
+        newUserRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
     });
 }
 

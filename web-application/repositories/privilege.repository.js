@@ -3,14 +3,18 @@ import pool from "../utils/database.js";
 export async function getPrivilegeForRole(role) {
     const grantee = `'${role}'@'%'`;
     const [rows] = await pool.query(`
-        SELECT CONCAT(privilege_type, ' ON *.*')
-        FROM information_schema.user_privileges up
-        WHERE up.grantee = ?
+        SELECT CONCAT(privilege_type, ' ON *.*') AS privilege
+        FROM information_schema.user_privileges
+        WHERE grantee = ?
         UNION
-        SELECT CONCAT(privilege_type, ' ON ', table_schema, '.', table_name) as privilege
-        FROM information_schema.table_privileges tp
-        WHERE tp.grantee = ?
-    `, [grantee, grantee]);
+        SELECT CONCAT(privilege_type, ' ON ', table_schema, '.*') AS privilege
+        FROM information_schema.schema_privileges
+        WHERE grantee = ?
+        UNION
+        SELECT CONCAT(privilege_type, ' ON ', table_schema, '.', table_name) AS privilege
+        FROM information_schema.table_privileges
+        WHERE grantee = ?
+    `, [grantee, grantee, grantee]);
     return rows;
 }
 

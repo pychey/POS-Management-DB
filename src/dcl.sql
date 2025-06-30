@@ -48,121 +48,121 @@ GRANT REPLICATION SLAVE ON *.* TO 'database_admin';
 GRANT REPLICATION CLIENT ON *.* TO 'database_admin';
 
 -- SENIOR_DEVELOPER: Full administrative privileges on application database
-GRANT ALL PRIVILEGES ON pos_provider_system.* TO 'senior_developer';
+GRANT ALL PRIVILEGES ON pos_management_db.* TO 'senior_developer';
 GRANT CREATE USER ON *.* TO 'senior_developer';
 GRANT RELOAD ON *.* TO 'senior_developer';
 GRANT PROCESS ON *.* TO 'senior_developer';
 
 -- BACKEND_DEVELOPER: Full CRUD operations on application tables
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.pos_system TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.pos_feature TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.pricing TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.store_client TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.pos_sale TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.store_inventory TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.store_transaction TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.transaction_item TO 'backend_developer';
-GRANT SELECT, INSERT, UPDATE, DELETE ON pos_provider_system.blog TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.pos_system TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.pos_feature TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.pricing TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.store_client TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.pos_sale TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.store_inventory TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.store_transaction TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.transaction_item TO 'backend_developer';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pos_management_db.blog TO 'backend_developer';
 
 -- FRONTEND_DEVELOPER: Read access to most tables, limited write access
-GRANT SELECT ON pos_provider_system.pos_system TO 'frontend_developer';
-GRANT SELECT ON pos_provider_system.pos_feature TO 'frontend_developer';
-GRANT SELECT ON pos_provider_system.pricing TO 'frontend_developer';
-GRANT SELECT ON pos_provider_system.store_client TO 'frontend_developer';
-GRANT SELECT, INSERT ON pos_provider_system.store_transaction TO 'frontend_developer';
-GRANT SELECT, INSERT ON pos_provider_system.transaction_item TO 'frontend_developer';
-GRANT SELECT ON pos_provider_system.store_inventory TO 'frontend_developer';
-GRANT SELECT ON pos_provider_system.pos_sale TO 'frontend_developer';
-GRANT SELECT, INSERT, UPDATE ON pos_provider_system.blog TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.pos_system TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.pos_feature TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.pricing TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.store_client TO 'frontend_developer';
+GRANT SELECT, INSERT ON pos_management_db.store_transaction TO 'frontend_developer';
+GRANT SELECT, INSERT ON pos_management_db.transaction_item TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.store_inventory TO 'frontend_developer';
+GRANT SELECT ON pos_management_db.pos_sale TO 'frontend_developer';
+GRANT SELECT, INSERT, UPDATE ON pos_management_db.blog TO 'frontend_developer';
 
 -- DATA_ANALYST: Read-only access for reporting and analytics
-GRANT SELECT ON pos_provider_system.pos_system TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.pos_feature TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.pricing TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.store_client TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.pos_sale TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.store_inventory TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.store_transaction TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.transaction_item TO 'data_analyst';
-GRANT SELECT ON pos_provider_system.blog TO 'data_analyst';
+GRANT SELECT ON pos_management_db.pos_system TO 'data_analyst';
+GRANT SELECT ON pos_management_db.pos_feature TO 'data_analyst';
+GRANT SELECT ON pos_management_db.pricing TO 'data_analyst';
+GRANT SELECT ON pos_management_db.store_client TO 'data_analyst';
+GRANT SELECT ON pos_management_db.pos_sale TO 'data_analyst';
+GRANT SELECT ON pos_management_db.store_inventory TO 'data_analyst';
+GRANT SELECT ON pos_management_db.store_transaction TO 'data_analyst';
+GRANT SELECT ON pos_management_db.transaction_item TO 'data_analyst';
+GRANT SELECT ON pos_management_db.blog TO 'data_analyst';
 
 -- QA_TESTER: Limited access for testing
-GRANT SELECT ON pos_provider_system.pos_system TO 'qa_tester';
-GRANT SELECT ON pos_provider_system.pos_feature TO 'qa_tester';
-GRANT SELECT ON pos_provider_system.pricing TO 'qa_tester';
-GRANT SELECT, INSERT ON pos_provider_system.store_client TO 'qa_tester';
-GRANT SELECT, INSERT ON pos_provider_system.store_transaction TO 'qa_tester';
-GRANT SELECT, INSERT ON pos_provider_system.transaction_item TO 'qa_tester';
-GRANT SELECT, INSERT, UPDATE ON pos_provider_system.store_inventory TO 'qa_tester';
+GRANT SELECT ON pos_management_db.pos_system TO 'qa_tester';
+GRANT SELECT ON pos_management_db.pos_feature TO 'qa_tester';
+GRANT SELECT ON pos_management_db.pricing TO 'qa_tester';
+GRANT SELECT, INSERT ON pos_management_db.store_client TO 'qa_tester';
+GRANT SELECT, INSERT ON pos_management_db.store_transaction TO 'qa_tester';
+GRANT SELECT, INSERT ON pos_management_db.transaction_item TO 'qa_tester';
+GRANT SELECT, INSERT, UPDATE ON pos_management_db.store_inventory TO 'qa_tester';
 
 -- INTERN_DEVELOPER: Very limited supervised access for learning
-GRANT SELECT ON pos_provider_system.pos_system TO 'intern_developer';
-GRANT SELECT ON pos_provider_system.pos_feature TO 'intern_developer';
-GRANT SELECT ON pos_provider_system.pricing TO 'intern_developer';
-GRANT SELECT ON pos_provider_system.blog TO 'intern_developer';
-GRANT INSERT ON pos_provider_system.blog TO 'intern_developer';
+GRANT SELECT ON pos_management_db.pos_system TO 'intern_developer';
+GRANT SELECT ON pos_management_db.pos_feature TO 'intern_developer';
+GRANT SELECT ON pos_management_db.pricing TO 'intern_developer';
+GRANT SELECT ON pos_management_db.blog TO 'intern_developer';
+GRANT INSERT ON pos_management_db.blog TO 'intern_developer';
 
 -- INTERN_ANALYST: Read-only access to non-sensitive data for learning
-GRANT SELECT ON pos_provider_system.pos_system TO 'intern_analyst';
-GRANT SELECT ON pos_provider_system.pos_feature TO 'intern_analyst';
-GRANT SELECT ON pos_provider_system.pricing TO 'intern_analyst';
-GRANT SELECT ON pos_provider_system.blog TO 'intern_analyst';
+GRANT SELECT ON pos_management_db.pos_system TO 'intern_analyst';
+GRANT SELECT ON pos_management_db.pos_feature TO 'intern_analyst';
+GRANT SELECT ON pos_management_db.pricing TO 'intern_analyst';
+GRANT SELECT ON pos_management_db.blog TO 'intern_analyst';
 
 -- ====================================================================
 -- 3. CREATE USERS AND ASSIGN TO ROLES
 -- ====================================================================
 
 -- DATABASE ADMINISTRATORS (Database Management, Performance, Security)
-CREATE USER 'thomas_administrator'@'%' IDENTIFIED BY '@CADT_Thomas_Admin_2024!';
-CREATE USER 'maria_database'@'%' IDENTIFIED BY '@CADT_Maria_DB_Secure!';
+CREATE USER 'thomas_administrator'@'%' IDENTIFIED BY '@123Thomas';
+CREATE USER 'maria_database'@'%' IDENTIFIED BY '@123Maria';
 
 -- SENIOR DEVELOPERS (Team Leads, Architects)
-CREATE USER 'john_smith'@'%' IDENTIFIED BY '@CADT_John_Smith_Lead!';
-CREATE USER 'sarah_wilson'@'%' IDENTIFIED BY '@CADT_Sarah_Wilson_Arch!';
-CREATE USER 'mike_johnson'@'%' IDENTIFIED BY '@CADT_Mike_Johnson_Sr!';
+CREATE USER 'john_smith'@'%' IDENTIFIED BY '@123John';
+CREATE USER 'sarah_wilson'@'%' IDENTIFIED BY '@123Sarah';
+CREATE USER 'mike_johnson'@'%' IDENTIFIED BY '@123Mike';
 
 -- BACKEND DEVELOPERS (API, Business Logic, Database)
-CREATE USER 'alex_chen'@'%' IDENTIFIED BY '@CADT_Alex_Chen_Backend!';
-CREATE USER 'emma_davis'@'%' IDENTIFIED BY '@CADT_Emma_Davis_API!';
-CREATE USER 'carlos_rodriguez'@'%' IDENTIFIED BY '@CADT_Carlos_Rodriguez_Dev!';
-CREATE USER 'priya_patel'@'%' IDENTIFIED BY '@CADT_Priya_Patel_Logic!';
-CREATE USER 'james_brown'@'%' IDENTIFIED BY '@CADT_James_Brown_Server!';
-CREATE USER 'lisa_wang'@'%' IDENTIFIED BY '@CADT_Lisa_Wang_Backend!';
-CREATE USER 'david_garcia'@'%' IDENTIFIED BY '@CADT_David_Garcia_Code!';
-CREATE USER 'anna_kowalski'@'%' IDENTIFIED BY '@CADT_Anna_Kowalski_Dev!';
+CREATE USER 'alex_chen'@'%' IDENTIFIED BY '@123Alex';
+CREATE USER 'emma_davis'@'%' IDENTIFIED BY '@123Emma';
+CREATE USER 'carlos_rodriguez'@'%' IDENTIFIED BY '@123Carlos';
+CREATE USER 'priya_patel'@'%' IDENTIFIED BY '@123Priya';
+CREATE USER 'james_brown'@'%' IDENTIFIED BY '@123James';
+CREATE USER 'lisa_wang'@'%' IDENTIFIED BY '@123Lisa';
+CREATE USER 'david_garcia'@'%' IDENTIFIED BY '@123David';
+CREATE USER 'anna_kowalski'@'%' IDENTIFIED BY '@123Anna';
 
 -- FRONTEND DEVELOPERS (UI, UX, Client-side)
-CREATE USER 'tyler_moore'@'%' IDENTIFIED BY '@CADT_Tyler_Moore_UI!';
-CREATE USER 'jessica_taylor'@'%' IDENTIFIED BY '@CADT_Jessica_Taylor_UX!';
-CREATE USER 'ryan_anderson'@'%' IDENTIFIED BY '@CADT_Ryan_Anderson_Web!';
-CREATE USER 'sophia_martin'@'%' IDENTIFIED BY '@CADT_Sophia_Martin_JS!';
-CREATE USER 'kevin_lee'@'%' IDENTIFIED BY '@CADT_Kevin_Lee_React!';
-CREATE USER 'maya_singh'@'%' IDENTIFIED BY '@CADT_Maya_Singh_Vue!';
+CREATE USER 'tyler_moore'@'%' IDENTIFIED BY '@123Tyler';
+CREATE USER 'jessica_taylor'@'%' IDENTIFIED BY '@123Jessica';
+CREATE USER 'ryan_anderson'@'%' IDENTIFIED BY '@123Ryan';
+CREATE USER 'sophia_martin'@'%' IDENTIFIED BY '@123Sophia';
+CREATE USER 'kevin_lee'@'%' IDENTIFIED BY '@123Kevin';
+CREATE USER 'maya_singh'@'%' IDENTIFIED BY '@123Maya';
 
 -- DATA ANALYSTS (Business Intelligence, Reporting)
-CREATE USER 'robert_clark'@'%' IDENTIFIED BY '@CADT_Robert_Clark_BI!';
-CREATE USER 'jennifer_white'@'%' IDENTIFIED BY '@CADT_Jennifer_White_Data!';
-CREATE USER 'daniel_adams'@'%' IDENTIFIED BY '@CADT_Daniel_Adams_Report!';
-CREATE USER 'olivia_thomas'@'%' IDENTIFIED BY '@CADT_Olivia_Thomas_Analytics!';
+CREATE USER 'robert_clark'@'%' IDENTIFIED BY '@123Robert';
+CREATE USER 'jennifer_white'@'%' IDENTIFIED BY '@123Jennifer';
+CREATE USER 'daniel_adams'@'%' IDENTIFIED BY '@123Daniel';
+CREATE USER 'olivia_thomas'@'%' IDENTIFIED BY '@123Olivia';
 
 -- QA TESTERS (Quality Assurance, Testing)
-CREATE USER 'mark_harris'@'%' IDENTIFIED BY '@CADT_Mark_Harris_QA!';
-CREATE USER 'rachel_lewis'@'%' IDENTIFIED BY '@CADT_Rachel_Lewis_Test!';
-CREATE USER 'chris_walker'@'%' IDENTIFIED BY '@CADT_Chris_Walker_Quality!';
-CREATE USER 'natalie_hall'@'%' IDENTIFIED BY '@CADT_Natalie_Hall_Verify!';
-CREATE USER 'brandon_young'@'%' IDENTIFIED BY '@CADT_Brandon_Young_QA!';
+CREATE USER 'mark_harris'@'%' IDENTIFIED BY '@123Mark';
+CREATE USER 'rachel_lewis'@'%' IDENTIFIED BY '@123Rachel';
+CREATE USER 'chris_walker'@'%' IDENTIFIED BY '@123Chris';
+CREATE USER 'natalie_hall'@'%' IDENTIFIED BY '@123Natalie';
+CREATE USER 'brandon_young'@'%' IDENTIFIED BY '@123Brandon';
 
 -- INTERN DEVELOPERS (Students, Junior Developers)
-CREATE USER 'sam_intern'@'%' IDENTIFIED BY '@CADT_Sam_Intern_Learning!';
-CREATE USER 'amy_student'@'%' IDENTIFIED BY '@CADT_Amy_Student_Code!';
-CREATE USER 'lucas_trainee'@'%' IDENTIFIED BY '@CADT_Lucas_Trainee_Dev!';
-CREATE USER 'zoe_beginner'@'%' IDENTIFIED BY '@CADT_Zoe_Beginner_Web!';
-CREATE USER 'ethan_junior'@'%' IDENTIFIED BY '@CADT_Ethan_Junior_Learn!';
+CREATE USER 'sam_intern'@'%' IDENTIFIED BY '@123Sam';
+CREATE USER 'amy_student'@'%' IDENTIFIED BY '@123Amy';
+CREATE USER 'lucas_trainee'@'%' IDENTIFIED BY '@123Lucas';
+CREATE USER 'zoe_beginner'@'%' IDENTIFIED BY '@123Zoe';
+CREATE USER 'ethan_junior'@'%' IDENTIFIED BY '@123Ethan';
 
 -- INTERN ANALYSTS (Students in Data/Analytics)
-CREATE USER 'lily_data_intern'@'%' IDENTIFIED BY '@CADT_Lily_Data_Student!';
-CREATE USER 'noah_analytics_student'@'%' IDENTIFIED BY '@CADT_Noah_Analytics_Learn!';
-CREATE USER 'grace_bi_trainee'@'%' IDENTIFIED BY '@CADT_Grace_BI_Intern!';
+CREATE USER 'lily_data_intern'@'%' IDENTIFIED BY '@123Lily';
+CREATE USER 'noah_analytics_student'@'%' IDENTIFIED BY '@123Noah';
+CREATE USER 'grace_bi_trainee'@'%' IDENTIFIED BY '@123Grace';
 
 -- ====================================================================
 -- 4. ASSIGN USERS TO ROLES
@@ -303,7 +303,7 @@ FLUSH PRIVILEGES;
 -- ====================================================================
 
 /*
-RBAC SCENARIO FOR POS PROVIDER SYSTEM:
+RBAC SCENARIO FOR POS MANAGEMENT SYSTEM:
 
 1. DATABASE_ADMIN (2 users):
    - Ultimate database administrators with full system privileges
@@ -356,11 +356,11 @@ RBAC SCENARIO FOR POS PROVIDER SYSTEM:
 TOTAL USERS: 36 users across 8 roles
 
 PASSWORD POLICY:
-- All passwords follow format: @CADT_[Name]_[Role/Descriptor]!
-- Examples: @CADT_John_Smith_Lead!, @CADT_Thomas_Admin_2024!
-- Incorporates CADT prefix as requested
-- Includes user identification and role context
-- Strong password complexity with special characters
+- All passwords follow format: @123[FirstName]
+- Examples: @123John, @123Thomas, @123Alex
+- Simple, secure format that meets MySQL password requirements
+- Includes special character (@), numbers (123), and letters
+- Easy to remember and manage for development environment
 
 BENEFITS:
 - Hierarchical access control from interns to database admins
