@@ -2,7 +2,7 @@ import * as userRepository from '../repositories/user.repository.js'
 
 export const getUsers = async (req, res) => {
     try {
-        const [rows] = await userRepository.getUser();
+        const rows = await userRepository.getUser();
         res.json(rows);
     } catch (error) {
         res.status(500).json({ error: error.message });

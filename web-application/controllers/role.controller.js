@@ -2,7 +2,7 @@ import * as roleRepository from '../repositories/role.repository.js'
 
 export const getRole = async (req, res) => {
     try {
-        const [rows] = await roleRepository.getRole();
+        const rows = await roleRepository.getRole();
         res.json(rows);
     } catch (error) {
         res.status(500).json({ error: error.message });

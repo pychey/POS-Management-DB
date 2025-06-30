@@ -8,6 +8,7 @@ export async function getUser() {
         FROM mysql.user u 
         LEFT JOIN mysql.role_edges re ON u.User = re.to_user AND u.Host = re.to_host
         WHERE u.User NOT IN ('root', 'mysql.sys', 'mysql.session', 'mysql.infoschema')
+        AND u.authentication_string != ''
         ORDER BY u.User
     `);
     return rows;
