@@ -6,6 +6,6 @@ const userRouter = Router();
 userRouter.get('/', getUsers);
 userRouter.post('/', createUser);
 userRouter.put('/:username/:host/role', updateUser);
-userRouter.delete('/:username/host', deleteUser);
+userRouter.delete('/:username/:host', deleteUser);
 
 export default userRouter;

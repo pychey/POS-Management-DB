@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import path from "path";
 import userRouter from './routes/user.route.js';
 import roleRouter from './routes/role.route.js';
 import privilegeRouter from './routes/privilege.route.js'
@@ -12,12 +11,8 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.use('/api/users/', userRouter);
-app.use('api/roles/', roleRouter);
-app.use('api/privilege/', privilegeRouter);
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.use('/api/roles/', roleRouter);
+app.use('/api/privileges/', privilegeRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

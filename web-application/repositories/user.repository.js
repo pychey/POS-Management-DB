@@ -30,12 +30,12 @@ export async function updateUser(username, host, newRole) {
         await pool.execute(`REVOKE ? FROM '${username}'@'${host}'`, [roleRow.role]);
     }
     
-    await pool.execute(`GRANT ? TO ${username}'@'${host}'`, [newRole]);
-    await pool.execute(`SET DEFAULT ROLE ? TO ${username}'@'${host}'`, [newRole]);
+    await pool.execute(`GRANT ? TO '${username}'@'${host}'`, [newRole]);
+    await pool.execute(`SET DEFAULT ROLE ? TO '${username}'@'${host}'`, [newRole]);
     await pool.execute(`FLUSH PRIVILEGES`);
 }
 
 export async function deleteUser(username, host) {
-    await pool.execute(`DROP USER ${username}'@'${host}'`);
+    await pool.execute(`DROP USER '${username}'@'${host}'`);
     await pool.execute(`FLUSH PRIVILEGES`);
 }
