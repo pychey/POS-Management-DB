@@ -3,10 +3,9 @@ import pool from "../utils/database.js";
 export async function getRole() {
     const [rows] = await pool.execute(`
         SELECT User as name, 
-                'Custom Role' as description,
-                (SELECT COUNT(*) FROM mysql.role_edges WHERE from_user = User) as userCount
-        FROM mysql.user 
-        WHERE is_role = 'Y'
+       	    (SELECT COUNT(*) FROM mysql.role_edges WHERE from_user = User) as userCount
+        FROM mysql.user
+        WHERE authentication_string = ''
         ORDER BY User
     `);
     return rows;

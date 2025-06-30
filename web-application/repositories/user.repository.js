@@ -15,8 +15,8 @@ export async function getUser() {
 
 export async function createUser(username, password, host, role) {
     await pool.execute(`CREATE USER '${username}'@'${host}' IDENTIFIED BY '${password}'`);
-    await pool.execute(`GRANT ? TO ?@?`, [role, username, host]);
-    await pool.execute(`SET DEFAULT ROLE ? TO ?@?`, [role, username, host]);
+    await pool.execute(`GRANT '${role}' TO '${username}'@'${host}'`);
+    await pool.execute(`SET DEFAULT ROLE '${role}' TO '${username}'@'${host}'`);
     await pool.execute(`FLUSH PRIVILEGES`);
 }
 
@@ -27,15 +27,15 @@ export async function updateUser(username, host, newRole) {
     `, [username, host]);
     
     for (const roleRow of currentRoles) {
-        await pool.execute(`REVOKE ? FROM ?@?`, [roleRow.role, username, host]);
+        await pool.execute(`REVOKE ? FROM '${username}'@'${host}'`, [roleRow.role]);
     }
     
-    await pool.execute(`GRANT ? TO ?@?`, [newRole, username, host]);
-    await pool.execute(`SET DEFAULT ROLE ? TO ?@?`, [newRole, username, host]);
+    await pool.execute(`GRANT ? TO ${username}'@'${host}'`, [newRole]);
+    await pool.execute(`SET DEFAULT ROLE ? TO ${username}'@'${host}'`, [newRole]);
     await pool.execute(`FLUSH PRIVILEGES`);
 }
 
 export async function deleteUser(username, host) {
-    await pool.execute(`DROP USER ?@?`, [username, host]);
+    await pool.execute(`DROP USER ${username}'@'${host}'`);
     await pool.execute(`FLUSH PRIVILEGES`);
 }

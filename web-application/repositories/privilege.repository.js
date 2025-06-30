@@ -1,26 +1,20 @@
 import pool from "../utils/database.js";
 
 export async function getPrivilegeForRole(role) {
+    const grantee = `'${role}'@'%'`;
     const [rows] = await pool.execute(`
-        SELECT CONCAT(privilege_type, ' ON ', 
-                        CASE 
-                        WHEN table_schema = '*' THEN '*.*'
-                        ELSE CONCAT(table_schema, '.', table_name)
-                        END) as privilege
+        SELECT CONCAT(privilege_type, ' ON *.*')
         FROM information_schema.user_privileges up
-        WHERE up.grantee = CONCAT("'", ?, "'@'%'")
+        WHERE up.grantee = ?
         UNION
         SELECT CONCAT(privilege_type, ' ON ', table_schema, '.', table_name) as privilege
         FROM information_schema.table_privileges tp
-        WHERE tp.grantee = CONCAT("'", ?, "'@'%'")
-    `, [role, role]);
+        WHERE tp.grantee = ?
+    `, [grantee, grantee]);
     return rows;
 }
 
-export async function grantPrivilegeToRole(role, table, privileges) {
-    const privilegeString = privileges.join(', ');
-    const tableName = `pos_management_db.${table}`;
-    
+export async function grantPrivilegeToRole(role, tableName, privilegeString) {
     await pool.execute(`GRANT ${privilegeString} ON ${tableName} TO ?`, [role]);
     await pool.execute(`FLUSH PRIVILEGES`);
 }
