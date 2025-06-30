@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS pos_management_db;
-DATABASE IF NOT EXISTS pos_management_db;
+DROP DATABASE pos_management_db;
+CREATE DATABASE IF NOT EXISTS pos_management_db;
 USE pos_management_db;
 
 -- 1. POS System (Products you sell)
