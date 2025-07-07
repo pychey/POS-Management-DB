@@ -18,7 +18,8 @@ export const grantPrivilegeToRole = async (req, res) => {
 
     try {
         await privilegeRepository.grantPrivilegeToRole(role, tableName, privilegeString);
-        res.json({ message: `Privileges ${privilegeString} granted to role ${role} on table ${table}` });
+        const tableDescription = table == '*' ? 'all tables' : `table ${table}`;
+        res.json({ message: `Privileges ${privilegeString} granted to role ${role} on ${tableDescription}` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

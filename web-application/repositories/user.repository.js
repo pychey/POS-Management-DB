@@ -21,6 +21,11 @@ export async function createUser(username, password, host, role) {
     await pool.query(`FLUSH PRIVILEGES`);
 }
 
+export async function grantRoleToUser(username, host, newRole) {
+    await pool.query(`GRANT ? TO '${username}'@'${host}'`, [newRole]);
+    await pool.query(`FLUSH PRIVILEGES`);
+}
+
 export async function updateUser(username, host, newRole) {
     const [currentRoles] = await pool.query(`
         SELECT from_user as role FROM mysql.role_edges 

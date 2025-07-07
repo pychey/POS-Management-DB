@@ -22,6 +22,8 @@ async function loadUsers() {
                 </td>
             `;
         });
+
+        populateGrantRoleUserDropdown();
     } catch (error) {
         console.error('Error loading users:', error);
         alert('Failed to load users');
@@ -60,6 +62,37 @@ async function createUser(event) {
     }
 }
 
+async function grantRoleToUser(event) {
+    event.preventDefault();
+    
+    const userSelect = document.getElementById('grantRoleUser');
+    const [username, host] = userSelect.value.split('@');
+    const newRole = document.getElementById('grantRoleToUserRole').value;
+    
+    try {
+        const response = await fetch(`/api/users/${username}/${encodeURIComponent(host)}/grant-role`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ newRole })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(result.message);
+            event.target.reset();
+            loadUsers();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error granting role:', error);
+        alert('Failed to grant role');
+    }
+}
+
 async function deleteUser(username, host) {
     if (confirm(`Are you sure you want to delete user ${username}@${host}?`)) {
         try {
@@ -87,7 +120,8 @@ async function editUser(username, host) {
     const newRole = prompt(`Enter new role for ${username}:`);
     if (newRole) {
         try {
-            const response = await fetch(`/api/users/${username}/${host}/role`, {
+            const encodedHost = encodeURIComponent(host);
+            const response = await fetch(`/api/users/${username}/${encodedHost}/role`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -194,6 +228,7 @@ async function loadTables() {
         
         const tableSelect = document.getElementById('privilegeTable');
         tableSelect.innerHTML = '<option value="">Select Table</option>';
+        tableSelect.innerHTML += '<option value="*">All Tables</option>';
         
         tables.forEach(table => {
             tableSelect.innerHTML += `<option value="${table.name}">${table.name}</option>`;
@@ -206,16 +241,20 @@ async function loadTables() {
 function updateRoleDropdowns() {
     const privilegeRoleSelect = document.getElementById('privilegeRole');
     const viewPrivilegesRoleSelect = document.getElementById('viewPrivilegesRole');
+    const grantRoleToUserRoleSelect = document.getElementById('grantRoleToUserRole');
     
     privilegeRoleSelect.innerHTML = '<option value="">Select Role</option>';
     viewPrivilegesRoleSelect.innerHTML = '<option value="">Select Role to View Privileges</option>';
+    grantRoleToUserRoleSelect.innerHTML = '<option value="">Select Role</option>';
     
     roles.forEach(role => {
         privilegeRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
         viewPrivilegesRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
+        grantRoleToUserRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
     });
 
     populateNewUserRoleDropdown();
+    populateGrantRoleUserDropdown();
 }
 
 function populateNewUserRoleDropdown() {
@@ -227,22 +266,50 @@ function populateNewUserRoleDropdown() {
     });
 }
 
+function populateGrantRoleUserDropdown() {
+    const grantRoleUserSelect = document.getElementById('grantRoleUser');
+    grantRoleUserSelect.innerHTML = '<option value="">Select User</option>';
+    
+    users.forEach(user => {
+        grantRoleUserSelect.innerHTML += `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
+    });
+}
+
 async function grantPrivileges(event) {
     event.preventDefault();
     
     const role = document.getElementById('privilegeRole').value;
     const table = document.getElementById('privilegeTable').value;
+
+    const privilegeLevel = document.querySelector('input[name="privilegeLevel"]:checked').value;
     
     const privileges = [];
-    if (document.getElementById('privSelect').checked) privileges.push('SELECT');
-    if (document.getElementById('privInsert').checked) privileges.push('INSERT');
-    if (document.getElementById('privUpdate').checked) privileges.push('UPDATE');
-    if (document.getElementById('privDelete').checked) privileges.push('DELETE');
-    
-    if (privileges.length === 0) {
-        alert('Please select at least one privilege!');
-        return;
-    }
+
+    if (privilegeLevel === 'specific') {
+        if (document.getElementById('privSelect').checked) privileges.push('SELECT');
+        if (document.getElementById('privInsert').checked) privileges.push('INSERT');
+        if (document.getElementById('privUpdate').checked) privileges.push('UPDATE');
+        if (document.getElementById('privDelete').checked) privileges.push('DELETE');
+        if (document.getElementById('privCreate').checked) privileges.push('CREATE');
+        if (document.getElementById('privDrop').checked) privileges.push('DROP');
+        if (document.getElementById('privAlter').checked) privileges.push('ALTER');
+        if (document.getElementById('privIndex').checked) privileges.push('INDEX');
+        if (document.getElementById('privReferences').checked) privileges.push('REFERENCES');
+        if (document.getElementById('privExecute').checked) privileges.push('EXECUTE');
+        if (document.getElementById('privShowView').checked) privileges.push('SHOW VIEW');
+        if (document.getElementById('privCreateView').checked) privileges.push('CREATE VIEW');
+        if (document.getElementById('privEvent').checked) privileges.push('EVENT');
+        if (document.getElementById('privTrigger').checked) privileges.push('TRIGGER');
+        if (document.getElementById('privLockTables').checked) privileges.push('LOCK TABLES');
+        if (document.getElementById('privGrantOption').checked) privileges.push('GRANT OPTION');
+        
+        if (privileges.length === 0) {
+            alert('Please select at least one privilege!');
+            return;
+        }
+    } 
+    else if (privilegeLevel === 'all') privileges = ['ALL PRIVILEGES'];
+    else if (privilegeLevel === 'all_with_grant') privileges = ['ALL PRIVILEGES WITH GRANT OPTION'];
     
     try {
         const response = await fetch(`/api/privileges`, {
@@ -258,6 +325,8 @@ async function grantPrivileges(event) {
         if (response.ok) {
             alert(result.message);
             event.target.reset();
+            document.getElementById('specificPrivileges').checked = true;
+            togglePrivilegeSelection();
         } else {
             alert('Error: ' + result.error);
         }
@@ -295,6 +364,17 @@ async function viewRolePrivileges() {
     } catch (error) {
         console.error('Error fetching privileges:', error);
         display.innerHTML = '<p>Error loading privileges</p>';
+    }
+}
+
+function togglePrivilegeSelection() {
+    const privilegeGrid = document.getElementById('privilegeGrid');
+    const specificPrivileges = document.getElementById('specificPrivileges');
+    
+    if (specificPrivileges.checked) {
+        privilegeGrid.style.display = 'grid';
+    } else {
+        privilegeGrid.style.display = 'none';
     }
 }
 

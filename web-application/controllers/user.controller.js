@@ -20,6 +20,18 @@ export const createUser = async (req, res) => {
     }
 }
 
+export const grantRoleToUser = async (req, res) => {
+    const { username, host } = req.params;
+    const { newRole } = req.body;
+
+    try {
+        await userRepository.grantRoleToUser(username, host, newRole);
+        res.json({ message: `Role ${newRole} granted to user ${username}@${host}` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
 export const updateUser = async (req, res) => {
     const { username, host } = req.params;
     const { newRole } = req.body;

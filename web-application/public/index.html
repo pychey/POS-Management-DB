@@ -48,6 +48,28 @@
 
     <hr>
 
+    <!-- Grant Role to Existing User -->
+    <div>
+        <h2>Grant Role to Existing User</h2>
+        <form onsubmit="grantRoleToUser(event)">
+            <label>Select User: 
+                <select id="grantRoleUser" required>
+                    <option value="">Select User</option>
+                    <!-- Users will be loaded here -->
+                </select>
+            </label><br><br>
+            <label>Grant Role: 
+                <select id="grantRoleToUserRole" required>
+                    <option value="">Select Role</option>
+                    <!-- Roles will be loaded here -->
+                </select>
+            </label><br><br>
+            <button type="submit">Grant Role</button>
+        </form>
+    </div>
+
+    <hr>
+
     <!-- Role Management -->
     <div>
         <h2>Role Management</h2>
@@ -89,15 +111,48 @@
             <label>Table: 
                 <select id="privilegeTable" required>
                     <option value="">Select Table</option>
+                    <option value="*">All Tables</option>
                     <!-- Tables will be loaded here -->
                 </select>
             </label><br><br>
             
             <label>Privileges:</label><br>
-            <input type="checkbox" id="privSelect" value="SELECT"> SELECT<br>
-            <input type="checkbox" id="privInsert" value="INSERT"> INSERT<br>
-            <input type="checkbox" id="privUpdate" value="UPDATE"> UPDATE<br>
-            <input type="checkbox" id="privDelete" value="DELETE"> DELETE<br><br>
+            <div style="margin: 10px 0;">
+                <input type="radio" id="specificPrivileges" name="privilegeLevel" value="specific" checked onchange="togglePrivilegeSelection()"> 
+                <label for="specificPrivileges">SELECT SPECIFIC PRIVILEGES</label><br>
+                <input type="radio" id="allPrivileges" name="privilegeLevel" value="all" onchange="togglePrivilegeSelection()"> 
+                <label for="allPrivileges">ALL PRIVILEGES</label><br>
+                <input type="radio" id="allPrivilegesWithGrant" name="privilegeLevel" value="all_with_grant" onchange="togglePrivilegeSelection()"> 
+                <label for="allPrivilegesWithGrant">ALL PRIVILEGES WITH GRANT OPTION</label><br>
+            </div>
+
+            <div id="privilegeGrid" style="display: grid; grid-template-columns: repeat(3, 1fr);">
+                <div>
+                    <h4>Data Operations</h4>
+                    <input type="checkbox" id="privSelect" value="SELECT"> SELECT<br>
+                    <input type="checkbox" id="privInsert" value="INSERT"> INSERT<br>
+                    <input type="checkbox" id="privUpdate" value="UPDATE"> UPDATE<br>
+                    <input type="checkbox" id="privDelete" value="DELETE"> DELETE<br>
+                </div>
+                <div>
+                    <h4>Structure Operations</h4>
+                    <input type="checkbox" id="privCreate" value="CREATE"> CREATE<br>
+                    <input type="checkbox" id="privDrop" value="DROP"> DROP<br>
+                    <input type="checkbox" id="privAlter" value="ALTER"> ALTER<br>
+                    <input type="checkbox" id="privIndex" value="INDEX"> INDEX<br>
+                    <input type="checkbox" id="privReferences" value="REFERENCES"> REFERENCES<br>
+                </div>
+                <div>
+                    <h4>Advanced Operations</h4>
+                    <input type="checkbox" id="privExecute" value="EXECUTE"> EXECUTE<br>
+                    <input type="checkbox" id="privShowView" value="SHOW VIEW"> SHOW VIEW<br>
+                    <input type="checkbox" id="privCreateView" value="CREATE VIEW"> CREATE VIEW<br>
+                    <input type="checkbox" id="privEvent" value="EVENT"> EVENT<br>
+                    <input type="checkbox" id="privTrigger" value="TRIGGER"> TRIGGER<br>
+                    <input type="checkbox" id="privLockTables" value="LOCK TABLES"> LOCK TABLES<br>
+                    <input type="checkbox" id="privGrantOption" value="GRANT OPTION"> GRANT OPTION<br>
+                </div>
+            </div>
             
             <button type="submit">Grant Privileges</button>
         </form>

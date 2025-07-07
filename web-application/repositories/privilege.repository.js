@@ -19,6 +19,8 @@ export async function getPrivilegeForRole(role) {
 }
 
 export async function grantPrivilegeToRole(role, tableName, privilegeString) {
-    await pool.query(`GRANT ${privilegeString} ON ${tableName} TO ?`, [role]);
+    if (privilegeString == 'ALL PRIVILEGES WITH GRANT OPTION') await pool.query(`GRANT ALL PRIVILEGES ON ${tableName} TO ? WITH GRANT OPTION`, [role]);
+    else if (privilegeString === 'ALL PRIVILEGES') await pool.query(`GRANT ALL PRIVILEGES ON ${tableName} TO ?`, [role]);
+    else await pool.query(`GRANT ${privilegeString} ON ${tableName} TO ?`, [role]);
     await pool.query(`FLUSH PRIVILEGES`);
 }
