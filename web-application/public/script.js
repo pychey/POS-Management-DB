@@ -308,8 +308,8 @@ async function grantPrivileges(event) {
             return;
         }
     } 
-    else if (privilegeLevel === 'all') privileges = ['ALL PRIVILEGES'];
-    else if (privilegeLevel === 'all_with_grant') privileges = ['ALL PRIVILEGES WITH GRANT OPTION'];
+    else if (privilegeLevel === 'all') privileges.push('ALL PRIVILEGES');
+    else if (privilegeLevel === 'all_with_grant') privileges.push('ALL PRIVILEGES WITH GRANT OPTION');
     
     try {
         const response = await fetch(`/api/privileges`, {
@@ -327,6 +327,7 @@ async function grantPrivileges(event) {
             event.target.reset();
             document.getElementById('specificPrivileges').checked = true;
             togglePrivilegeSelection();
+            await viewRolePrivileges();
         } else {
             alert('Error: ' + result.error);
         }
