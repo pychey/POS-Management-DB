@@ -24,6 +24,7 @@ async function loadUsers() {
         });
 
         populateGrantRoleUserDropdown();
+        populateUserPrivilegesDropdown();
     } catch (error) {
         console.error('Error loading users:', error);
         alert('Failed to load users');
@@ -273,6 +274,47 @@ function populateGrantRoleUserDropdown() {
     users.forEach(user => {
         grantRoleUserSelect.innerHTML += `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
     });
+}
+
+function populateUserPrivilegesDropdown() {
+    const viewPrivilegesUserSelect = document.getElementById('viewPrivilegesUser');
+    viewPrivilegesUserSelect.innerHTML = '<option value="">Select User to View Privileges</option>';
+    
+    users.forEach(user => {
+        viewPrivilegesUserSelect.innerHTML += `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
+    });
+}
+
+async function viewUserPrivileges() {
+    const userSelect = document.getElementById('viewPrivilegesUser');
+    const [username, host] = userSelect.value.split('@');
+    const display = document.getElementById('userPrivilegesDisplay');
+    
+    if (!username || !host) {
+        display.innerHTML = '';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/privileges/user/${username}/${encodeURIComponent(host)}`);
+        const privileges = await response.json();
+        
+        if (privileges.length === 0) {
+            display.innerHTML = '<p>No direct privileges found for this user.</p>';
+            return;
+        }
+        
+        let html = '<h4>Direct Privileges for ' + username + '@' + host + ':</h4><ul>';
+        privileges.forEach(privilege => {
+            html += '<li>' + privilege + '</li>';
+        });
+        html += '</ul>';
+        
+        display.innerHTML = html;
+    } catch (error) {
+        console.error('Error fetching user privileges:', error);
+        display.innerHTML = '<p>Error loading privileges</p>';
+    }
 }
 
 async function grantPrivileges(event) {
