@@ -15,8 +15,8 @@ export const getPrivilegeForUser = async (req, res) => {
     const { username, host } = req.params;
 
     try {
-        const rows = await privilegeRepository.getPrivilegeForUser(username, host);
-        res.json(rows.map(row => row.privilege));
+        const result = await privilegeRepository.getPrivilegeForUser(username, host);
+        res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

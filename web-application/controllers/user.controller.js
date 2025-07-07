@@ -14,7 +14,12 @@ export const createUser = async (req, res) => {
 
     try {
         await userRepository.createUser(username, password, host, role);
-        res.json({ message: `User ${username} created successfully with role ${role}` });
+        
+        const message = role 
+            ? `User ${username} created successfully with role ${role}`
+            : `User ${username} created successfully without role`;
+            
+        res.json({ message });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -27,6 +32,18 @@ export const grantRoleToUser = async (req, res) => {
     try {
         await userRepository.grantRoleToUser(username, host, newRole);
         res.json({ message: `Role ${newRole} granted to user ${username}@${host}` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export const revokeRoleFromUser = async (req, res) => {
+    const { username, host } = req.params;
+    const { role } = req.body;
+
+    try {
+        await userRepository.revokeRoleFromUser(username, host, role);
+        res.json({ message: `Role ${role} revoked from user ${username}@${host}` });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

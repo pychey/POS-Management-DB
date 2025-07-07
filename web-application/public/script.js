@@ -45,7 +45,7 @@ async function createUser(event) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password, host, role })
+            body: JSON.stringify({ username, password, host, role: role || null })
         });
         
         const result = await response.json();
@@ -91,6 +91,62 @@ async function grantRoleToUser(event) {
     } catch (error) {
         console.error('Error granting role:', error);
         alert('Failed to grant role');
+    }
+}
+
+async function revokeRoleFromUser(event) {
+    event.preventDefault();
+    
+    const userSelect = document.getElementById('revokeRoleUser');
+    const [username, host] = userSelect.value.split('@');
+    const role = document.getElementById('revokeRoleFromUserRole').value;
+    
+    try {
+        const response = await fetch(`/api/users/${username}/${encodeURIComponent(host)}/revoke-role`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert(result.message);
+            event.target.reset();
+            loadUsers();
+            // Clear the role dropdown
+            document.getElementById('revokeRoleFromUserRole').innerHTML = '<option value="">Select Role to Revoke</option>';
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error revoking role:', error);
+        alert('Failed to revoke role');
+    }
+}
+
+async function loadUserRolesForRevoke() {
+    const userSelect = document.getElementById('revokeRoleUser');
+    const roleSelect = document.getElementById('revokeRoleFromUserRole');
+    const [username, host] = userSelect.value.split('@');
+    
+    roleSelect.innerHTML = '<option value="">Select Role to Revoke</option>';
+    
+    if (!username || !host) return;
+    
+    try {
+        const response = await fetch(`/api/privileges/user/${username}/${encodeURIComponent(host)}`);
+        const result = await response.json();
+        
+        if (result.roles && result.roles.length > 0) {
+            result.roles.forEach(role => {
+                roleSelect.innerHTML += `<option value="${role}">${role}</option>`;
+            });
+        }
+    } catch (error) {
+        console.error('Error loading user roles:', error);
     }
 }
 
@@ -260,7 +316,7 @@ function updateRoleDropdowns() {
 
 function populateNewUserRoleDropdown() {
     const newUserRoleSelect = document.getElementById('newUserRole');
-    newUserRoleSelect.innerHTML = '<option value="">Select Role</option>';
+    newUserRoleSelect.innerHTML = '<option value="">Select Role (Optional)</option>';
     
     roles.forEach(role => {
         newUserRoleSelect.innerHTML += `<option value="${role.name}">${role.name}</option>`;
@@ -269,10 +325,15 @@ function populateNewUserRoleDropdown() {
 
 function populateGrantRoleUserDropdown() {
     const grantRoleUserSelect = document.getElementById('grantRoleUser');
+    const revokeRoleUserSelect = document.getElementById('revokeRoleUser');
+    
     grantRoleUserSelect.innerHTML = '<option value="">Select User</option>';
+    revokeRoleUserSelect.innerHTML = '<option value="">Select User</option>';
     
     users.forEach(user => {
-        grantRoleUserSelect.innerHTML += `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
+        const userOption = `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
+        grantRoleUserSelect.innerHTML += userOption;
+        revokeRoleUserSelect.innerHTML += userOption;
     });
 }
 
@@ -297,18 +358,29 @@ async function viewUserPrivileges() {
     
     try {
         const response = await fetch(`/api/privileges/user/${username}/${encodeURIComponent(host)}`);
-        const privileges = await response.json();
+        const result = await response.json();
         
-        if (privileges.length === 0) {
-            display.innerHTML = '<p>No direct privileges found for this user.</p>';
-            return;
+        let html = '<h4>Privileges for ' + username + '@' + host + ':</h4>';
+        
+        if (result.roles && result.roles.length > 0) {
+            html += '<h5>Roles:</h5><ul>';
+            result.roles.forEach(role => {
+                html += '<li>' + role + '</li>';
+            });
+            html += '</ul>';
+        } else {
+            html += '<p>No roles assigned</p>';
         }
         
-        let html = '<h4>Direct Privileges for ' + username + '@' + host + ':</h4><ul>';
-        privileges.forEach(privilege => {
-            html += '<li>' + privilege + '</li>';
-        });
-        html += '</ul>';
+        if (result.privileges && result.privileges.length > 0) {
+            html += '<h5>Direct Privileges:</h5><ul>';
+            result.privileges.forEach(privilege => {
+                html += '<li>' + privilege + '</li>';
+            });
+            html += '</ul>';
+        } else {
+            html += '<p>No direct privileges found</p>';
+        }
         
         display.innerHTML = html;
     } catch (error) {

@@ -38,8 +38,8 @@
             <label>Password: <input type="password" id="newPassword" required></label><br><br>
             <label>Host: <input type="text" id="newHost" value="%" required></label><br><br>
             <label>Role: 
-                <select id="newUserRole" required>
-                    <option value="">Select Role</option>
+                <select id="newUserRole">
+                    <option value="">Select Role (Optional)</option>
                 </select>
             </label><br><br>
             <button type="submit">Create User</button>
@@ -65,6 +65,28 @@
                 </select>
             </label><br><br>
             <button type="submit">Grant Role</button>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Revoke Role from User -->
+    <div>
+        <h2>Revoke Role from User</h2>
+        <form onsubmit="revokeRoleFromUser(event)">
+            <label>Select User: 
+                <select id="revokeRoleUser" required onchange="loadUserRolesForRevoke()">
+                    <option value="">Select User</option>
+                    <!-- Users will be loaded here -->
+                </select>
+            </label><br><br>
+            <label>Revoke Role: 
+                <select id="revokeRoleFromUserRole" required>
+                    <option value="">Select Role to Revoke</option>
+                    <!-- User's roles will be loaded here -->
+                </select>
+            </label><br><br>
+            <button type="submit">Revoke Role</button>
         </form>
     </div>
 

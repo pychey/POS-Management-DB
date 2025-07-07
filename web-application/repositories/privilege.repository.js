@@ -43,7 +43,16 @@ export async function getPrivilegeForRole(role) {
 
 export async function getPrivilegeForUser(username, host) {
     const grantee = `'${username}'@'${host}'`;
-    const [rows] = await pool.query(`
+    
+    // Get user's roles
+    const [roleRows] = await pool.query(`
+        SELECT from_user as role_name
+        FROM mysql.role_edges
+        WHERE to_user = ? AND to_host = ?
+    `, [username, host]);
+    
+    // Get user's direct privileges
+    const [privRows] = await pool.query(`
         WITH user_level AS (
             SELECT CONCAT(privilege_type, ' ON *.*') AS privilege
             FROM information_schema.user_privileges
@@ -79,7 +88,11 @@ export async function getPrivilegeForUser(username, host) {
             ON t.privilege_type = s.privilege_type AND t.table_schema = s.table_schema
         WHERE u.privilege IS NULL AND s.privilege IS NULL
     `, [grantee, grantee, grantee]);
-    return rows;
+    
+    return {
+        roles: roleRows.map(row => row.role_name),
+        privileges: privRows.map(row => row.privilege)
+    };
 }
 
 export async function grantPrivilegeToRole(role, tableName, privilegeString) {

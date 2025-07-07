@@ -3,12 +3,13 @@ import pool from "../utils/database.js";
 export async function getUser() {
     const [rows] = await pool.query(`
         SELECT u.User as username, u.Host as host, 
-                COALESCE(re.from_user, 'No Role') as role,
+                COALESCE(GROUP_CONCAT(re.from_user SEPARATOR ', '), 'No Role') as role,
                 IF(u.account_locked = 'Y', 'Locked', 'Active') as status
         FROM mysql.user u 
         LEFT JOIN mysql.role_edges re ON u.User = re.to_user AND u.Host = re.to_host
         WHERE u.User NOT IN ('root', 'mysql.sys', 'mysql.session', 'mysql.infoschema')
         AND u.authentication_string != ''
+        GROUP BY u.User, u.Host
         ORDER BY u.User
     `);
     return rows;
@@ -16,13 +17,22 @@ export async function getUser() {
 
 export async function createUser(username, password, host, role) {
     await pool.query(`CREATE USER '${username}'@'${host}' IDENTIFIED BY '${password}'`);
-    await pool.query(`GRANT '${role}' TO '${username}'@'${host}'`);
-    await pool.query(`SET DEFAULT ROLE '${role}' TO '${username}'@'${host}'`);
+    
+    if (role) {
+        await pool.query(`GRANT '${role}' TO '${username}'@'${host}'`);
+        await pool.query(`SET DEFAULT ROLE '${role}' TO '${username}'@'${host}'`);
+    }
+    
     await pool.query(`FLUSH PRIVILEGES`);
 }
 
 export async function grantRoleToUser(username, host, newRole) {
     await pool.query(`GRANT ? TO '${username}'@'${host}'`, [newRole]);
+    await pool.query(`FLUSH PRIVILEGES`);
+}
+
+export async function revokeRoleFromUser(username, host, role) {
+    await pool.query(`REVOKE ? FROM '${username}'@'${host}'`, [role]);
     await pool.query(`FLUSH PRIVILEGES`);
 }
 
