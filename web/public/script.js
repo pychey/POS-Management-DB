@@ -25,6 +25,7 @@ async function loadUsers() {
 
         populateGrantRoleUserDropdown();
         populateUserPrivilegesDropdown();
+        populateTestUserDropdown();
     } catch (error) {
         console.error('Error loading users:', error);
         alert('Failed to load users');
@@ -493,8 +494,137 @@ function togglePrivilegeSelection() {
     }
 }
 
+let currentTestUser = null;
+let currentTestPassword = null;
+
+function populateTestUserDropdown() {
+    const testLoginUserSelect = document.getElementById('testLoginUser');
+    testLoginUserSelect.innerHTML = '<option value="">Select User</option>';
+    
+    users.forEach(user => {
+        testLoginUserSelect.innerHTML += `<option value="${user.username}@${user.host}">${user.username}@${user.host}</option>`;
+    });
+}
+
+async function testUserLogin(event) {
+    event.preventDefault();
+    
+    const userSelect = document.getElementById('testLoginUser');
+    const [username, host] = userSelect.value.split('@');
+    const password = document.getElementById('testLoginPassword').value;
+    const resultDiv = document.getElementById('loginResult');
+    
+    try {
+        const response = await fetch('/api/test/connection', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, host, password })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            resultDiv.innerHTML = `<div class="success">${result.message}</div>`;
+            currentTestUser = username;
+            currentTestPassword = password;
+            document.getElementById('operationTestSection').style.display = 'block';
+            populateTestOperationTables();
+        } else {
+            resultDiv.innerHTML = `<div class="error">Login failed: ${result.error}</div>`;
+            document.getElementById('operationTestSection').style.display = 'none';
+        }
+    } catch (error) {
+        resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        document.getElementById('operationTestSection').style.display = 'none';
+    }
+}
+
+async function populateTestOperationTables() {
+    try {
+        const response = await fetch('/api/tables');
+        const tables = await response.json();
+        
+        const tableSelect = document.getElementById('testOperationTable');
+        tableSelect.innerHTML = '<option value="">Select Table</option>';
+        
+        tables.forEach(table => {
+            tableSelect.innerHTML += `<option value="${table.name}">${table.name}</option>`;
+        });
+    } catch (error) {
+        console.error('Error loading tables for testing:', error);
+    }
+}
+
+async function testOperation(event) {
+    event.preventDefault();
+    
+    const operation = document.getElementById('operationSelect').value;
+    const table = document.getElementById('testOperationTable').value;
+    const logDiv = document.getElementById('testLog');
+    
+    if (!currentTestUser || !currentTestPassword) {
+        alert('Please login first');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/test/operation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+                username: currentTestUser, 
+                password: currentTestPassword, 
+                operation, 
+                table 
+            })
+        });
+        
+        const result = await response.json();
+        
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement('div');
+        logEntry.style.marginBottom = '10px';
+        logEntry.style.padding = '10px';
+        logEntry.style.borderRadius = '4px';
+        logEntry.style.border = '1px solid #ddd';
+        
+        if (result.success) {
+            logEntry.className = 'success';
+            logEntry.innerHTML = `
+                <strong>[${timestamp}] SUCCESS:</strong> ${operation} on ${table}<br>
+                <em>Result: ${result.message}</em>
+            `;
+        } else {
+            logEntry.className = 'error';
+            logEntry.innerHTML = `
+                <strong>[${timestamp}] FAILED:</strong> ${operation} on ${table}<br>
+                <em>Error: ${result.error}</em>
+            `;
+        }
+        
+        logDiv.insertBefore(logEntry, logDiv.firstChild);
+        
+    } catch (error) {
+        const timestamp = new Date().toLocaleTimeString();
+        const logEntry = document.createElement('div');
+        logEntry.className = 'error';
+        logEntry.style.marginBottom = '10px';
+        logEntry.style.padding = '10px';
+        logEntry.innerHTML = `<strong>[${timestamp}] ERROR:</strong> ${error.message}`;
+        logDiv.insertBefore(logEntry, logDiv.firstChild);
+    }
+}
+
 window.onload = function() {
     loadUsers();
     loadRoles();
     loadTables();
+    
+    setTimeout(() => {
+        populateTestUserDropdown();
+    }, 1000);
 };

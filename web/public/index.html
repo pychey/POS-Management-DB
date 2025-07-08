@@ -197,6 +197,54 @@
         <div id="userPrivilegesDisplay"></div>
     </div>
 
+    <hr>
+
+    <!-- User Permission Testing -->
+    <div>
+        <h2>User Permission Testing</h2>
+        <p>Test actual user permissions by logging in as different users and attempting operations.</p>
+        
+        <h3>Login as User</h3>
+        <form onsubmit="testUserLogin(event)">
+            <label>Select User: 
+                <select id="testLoginUser" required>
+                    <option value="">Select User</option>
+                </select>
+            </label><br><br>
+            <label>Password: <input type="password" id="testLoginPassword" required></label><br><br>
+            <button type="submit">Test Login</button>
+        </form>
+        
+        <div id="loginResult"></div>
+        
+        <div id="operationTestSection" style="display: none;">
+            <h3>Test Operations</h3>
+            <form onsubmit="testOperation(event)">
+                <label>Operation: 
+                    <select id="operationSelect" required>
+                        <option value="">Select Operation</option>
+                        <option value="SELECT">SELECT</option>
+                        <option value="INSERT">INSERT</option>
+                        <option value="UPDATE">UPDATE</option>
+                        <option value="DELETE">DELETE</option>
+                        <option value="CREATE">CREATE TABLE</option>
+                    </select>
+                </label><br><br>
+                <label>Table: 
+                    <select id="testOperationTable" required>
+                        <option value="">Select Table</option>
+                    </select>
+                </label><br><br>
+                <button type="submit">Test Operation</button>
+            </form>
+            
+            <div id="operationResults">
+                <h4>Test Results:</h4>
+                <div id="testLog"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="/script.js"></script>
 </body>
 </html>

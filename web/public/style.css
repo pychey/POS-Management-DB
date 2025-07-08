@@ -284,6 +284,28 @@ input[type="checkbox"] + label {
     margin: 20px 0;
 }
 
+#operationTestSection {
+    background: #f0f8ff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-top: 20px;
+    border: 1px solid #b0d4f1;
+}
+
+#testLog {
+    max-height: 400px;
+    overflow-y: auto;
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+#loginResult {
+    margin-top: 15px;
+}
+
 form > label {
     margin-bottom: 15px;
 }
