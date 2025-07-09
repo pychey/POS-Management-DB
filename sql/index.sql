@@ -1,10 +1,8 @@
 USE pos_management_db;
 
 -- Performance Optimization: Indexing Strategy
--- These indexes will significantly improve query performance
 
--- 1. Primary Key Indexes (already created automatically)
--- All tables have primary key indexes on their ID columns
+-- 1. Primary Key Indexes (Already Created)
 
 -- 2. Foreign Key Indexes for JOIN operations
 CREATE INDEX idx_pricing_pos_id ON pricing(pos_id);
@@ -49,43 +47,3 @@ CREATE FULLTEXT INDEX idx_store_client_search ON store_client(store_name, owner_
 -- 8. Unique indexes for data integrity
 CREATE UNIQUE INDEX idx_store_client_email_unique ON store_client(email);
 CREATE UNIQUE INDEX idx_store_inventory_barcode_unique ON store_inventory(barcode);
-
--- Performance Analysis Queries
--- These queries help analyze index usage and performance
-
--- Check index usage statistics
-SELECT 
-    TABLE_NAME,
-    INDEX_NAME,
-    CARDINALITY,
-    SUB_PART,
-    PACKED,
-    NULLABLE,
-    INDEX_TYPE
-FROM information_schema.STATISTICS 
-WHERE TABLE_SCHEMA = 'pos_management_db'
-ORDER BY TABLE_NAME, INDEX_NAME;
-
--- Analyze table sizes and row counts
-SELECT 
-    TABLE_NAME,
-    TABLE_ROWS,
-    ROUND(((DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024), 2) AS 'Size (MB)',
-    ROUND((DATA_LENGTH / 1024 / 1024), 2) AS 'Data Size (MB)',
-    ROUND((INDEX_LENGTH / 1024 / 1024), 2) AS 'Index Size (MB)'
-FROM information_schema.TABLES 
-WHERE TABLE_SCHEMA = 'pos_management_db'
-ORDER BY TABLE_ROWS DESC;
-
--- Check for unused indexes (requires MySQL 8.0+)
--- SELECT 
---     OBJECT_SCHEMA,
---     OBJECT_NAME,
---     INDEX_NAME,
---     COUNT_FETCH,
---     COUNT_INSERT,
---     COUNT_UPDATE,
---     COUNT_DELETE
--- FROM performance_schema.table_io_waits_summary_by_index_usage
--- WHERE OBJECT_SCHEMA = 'pos_management_db'
--- ORDER BY COUNT_FETCH DESC; 

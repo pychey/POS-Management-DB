@@ -1,4 +1,15 @@
-import pool from './database.js';
+import mysql from "mysql2/promise";
+
+// Security At Its Highest Form
+
+const pool = mysql.createPool({
+    host: 'maglev.proxy.rlwy.net',
+    user: 'root',
+    password: 'zfZikcmJmTfiQOQKwToHWSJbaxBpmCpW',
+    database: 'pos_management_db',
+    port: 41425,
+    multipleStatements: true
+});
 
 const removeUsersAndRoles = async () => {
     const [rows] = await pool.execute(`
