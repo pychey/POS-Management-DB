@@ -25,7 +25,7 @@
 
 ### II. To Run the Web App
 
-1. Navigate and run:
+1. Run the following commands:
 
    ```bash
    cd web
@@ -50,7 +50,7 @@
 
 #### To Run Backup
 
-4. Locate `mysqldump.exe` and copy its full path, e.g.:
+4. Find `mysqldump.exe` inside bin folder and copy its full path:
 
    ```
    C:\\path\\to\\mysql\\bin\\mysqldump.exe
@@ -74,7 +74,7 @@
 
 #### To Run Recovery
 
-6. Locate `mysql.exe` and copy its full path, e.g.:
+6. Find `mysql.exe` inside bin folder and copy its full path:
 
    ```
    C:\\path\\to\\mysql\\bin\\mysql.exe
