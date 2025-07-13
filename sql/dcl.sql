@@ -19,7 +19,6 @@ grant replication slave on *.* to 'database_admin';
 grant replication client on *.* to 'database_admin';
 
 grant all privileges on pos_management_db.* to 'senior_developer';
-grant create user on *.* to 'senior_developer';
 grant reload on *.* to 'senior_developer';
 grant process on *.* to 'senior_developer';
 

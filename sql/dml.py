@@ -6,23 +6,23 @@ from datetime import datetime
 faker = Faker()
 
 conn = mysql.connector.connect(
-    host='maglev.proxy.rlwy.net',
-    port=41425,
+    host='localhost',
+    port=3306,
     user='root',
-    password='zfZikcmJmTfiQOQKwToHWSJbaxBpmCpW',
+    password='@123Pychey',
     database='pos_management_db'
 )
 cursor = conn.cursor()
 
-NUM_POS_SYSTEM = 50
-NUM_POS_FEATURE = 300
-NUM_PRICING = 150
-NUM_STORE_CLIENT = 500
-NUM_POS_SALE = 5000
-NUM_STORE_INVENTORY = 10000
-NUM_STORE_TRANSACTION = 7000
-NUM_TRANSACTION_ITEM = 12000
-NUM_SYSTEM_FEATURE = 1000
+NUM_POS_SYSTEM = 5000
+NUM_POS_FEATURE = 30000
+NUM_PRICING = 15000
+NUM_STORE_CLIENT = 50000
+NUM_POS_SALE = 500000
+NUM_STORE_INVENTORY = 1000000
+NUM_STORE_TRANSACTION = 700000
+NUM_TRANSACTION_ITEM = 1200000
+NUM_SYSTEM_FEATURE = 10000
 
 BATCH_SIZE = 5
 
